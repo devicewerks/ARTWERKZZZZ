@@ -52,21 +52,7 @@ export function SiteHeader() {
 
           <nav className="hidden md:flex w-full items-center justify-center">
             <Link href="/" className="px-3 py-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5 text-white"
-                aria-label="ARTWERKZZZZ Logo"
-              >
-                <path d="M12 2a9.96 9.96 0 0 0-7.071 2.929A9.96 9.96 0 0 0 2 12a9.96 9.96 0 0 0 2.929 7.071A9.96 9.96 0 0 0 12 22a9.96 9.96 0 0 0 7.071-2.929A9.96 9.96 0 0 0 22 12a9.96 9.96 0 0 0-2.929-7.071A9.96 9.96 0 0 0 12 2Z" />
-                <path d="M12 2v20" />
-                <path d="M2 12h20" />
-              </svg>
+              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
             </Link>
             <Link
               href="/store"
@@ -117,21 +103,7 @@ export function SiteHeader() {
 
           <div className="flex items-center md:hidden">
             <Link href="/" className="px-3 py-2">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="h-5 w-5 text-white"
-                aria-label="ARTWERKZZZZ Logo"
-              >
-                <path d="M12 2a9.96 9.96 0 0 0-7.071 2.929A9.96 9.96 0 0 0 2 12a9.96 9.96 0 0 0 2.929 7.071A9.96 9.96 0 0 0 12 22a9.96 9.96 0 0 0 7.071-2.929A9.96 9.96 0 0 0 22 12a9.96 9.96 0 0 0-2.929-7.071A9.96 9.96 0 0 0 12 2Z" />
-                <path d="M12 2v20" />
-                <path d="M2 12h20" />
-              </svg>
+              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
             </Link>
           </div>
 
