@@ -154,7 +154,7 @@ export function SiteFooter() {
             near you. Or call 1-800-ART-WERK.
           </p>
           <div className="mt-4 flex flex-col md:flex-row md:justify-between">
-            <p>Copyright © {new Date().getFullYear()} ARTWERKZZZZ Inc. All rights reserved.</p>
+            <p>Copyright © 2022 ARTWERKZZZZ Inc. All rights reserved.</p>
             <div className="mt-4 md:mt-0 flex flex-wrap gap-4">
               <Link href="/legal/privacy" className="hover:underline">
                 Privacy Policy
