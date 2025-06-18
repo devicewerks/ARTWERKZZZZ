@@ -25,31 +25,43 @@ type CartContextType = {
   toggleCart: () => void
 }
 
-const CartContext = createContext<CartContextType | undefined>(undefined)
+const CartContext = createContext<CartContextType | null>(null)
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([])
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const [isInitialized, setIsInitialized] = useState(false)
 
-  // Load cart from localStorage on mount
+  // Initialize cart from localStorage
   useEffect(() => {
-    const savedCart = localStorage.getItem("cart")
-    if (savedCart) {
-      try {
-        setItems(JSON.parse(savedCart))
-      } catch (error) {
-        console.error("Failed to parse cart from localStorage:", error)
+    try {
+      const savedCart = localStorage.getItem("artwerkzzzz-cart")
+      if (savedCart) {
+        const parsedCart = JSON.parse(savedCart)
+        if (Array.isArray(parsedCart)) {
+          setItems(parsedCart)
+        }
       }
+    } catch (error) {
+      console.error("Failed to load cart from localStorage:", error)
+      localStorage.removeItem("artwerkzzzz-cart")
+    } finally {
+      setIsInitialized(true)
     }
   }, [])
 
-  // Save cart to localStorage when it changes
+  // Save cart to localStorage when items change
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(items))
-  }, [items])
+    if (isInitialized) {
+      try {
+        localStorage.setItem("artwerkzzzz-cart", JSON.stringify(items))
+      } catch (error) {
+        console.error("Failed to save cart to localStorage:", error)
+      }
+    }
+  }, [items, isInitialized])
 
   const cartCount = items.reduce((total, item) => total + item.quantity, 0)
-
   const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0)
 
   const addItem = (newItem: Omit<CartItem, "quantity">) => {
@@ -57,28 +69,29 @@ export function CartProvider({ children }: { children: ReactNode }) {
       const existingItemIndex = prevItems.findIndex((item) => item.id === newItem.id)
 
       if (existingItemIndex > -1) {
-        // Item exists, increment quantity
         const updatedItems = [...prevItems]
         updatedItems[existingItemIndex].quantity += 1
 
-        toast({
-          title: "Item added to cart",
-          description: `${newItem.name} quantity increased to ${updatedItems[existingItemIndex].quantity}`,
-        })
+        if (isInitialized) {
+          toast({
+            title: "Item added to cart",
+            description: `${newItem.name} quantity increased to ${updatedItems[existingItemIndex].quantity}`,
+          })
+        }
 
         return updatedItems
       } else {
-        // New item, add with quantity 1
-        toast({
-          title: "Item added to cart",
-          description: `${newItem.name} added to your cart`,
-        })
+        if (isInitialized) {
+          toast({
+            title: "Item added to cart",
+            description: `${newItem.name} added to your cart`,
+          })
+        }
 
         return [...prevItems, { ...newItem, quantity: 1 }]
       }
     })
 
-    // Open cart when adding items
     setIsCartOpen(true)
   }
 
@@ -86,7 +99,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setItems((prevItems) => {
       const itemToRemove = prevItems.find((item) => item.id === id)
 
-      if (itemToRemove) {
+      if (itemToRemove && isInitialized) {
         toast({
           title: "Item removed",
           description: `${itemToRemove.name} removed from your cart`,
@@ -99,45 +112,46 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const updateQuantity = (id: string, quantity: number) => {
     if (quantity < 1) return
-
     setItems((prevItems) => prevItems.map((item) => (item.id === id ? { ...item, quantity } : item)))
   }
 
   const clearCart = () => {
     setItems([])
-    toast({
-      title: "Cart cleared",
-      description: "All items have been removed from your cart",
-    })
+    if (isInitialized) {
+      toast({
+        title: "Cart cleared",
+        description: "All items have been removed from your cart",
+      })
+    }
   }
 
   const toggleCart = () => {
     setIsCartOpen(!isCartOpen)
   }
 
-  return (
-    <CartContext.Provider
-      value={{
-        items,
-        cartCount,
-        totalPrice,
-        isCartOpen,
-        addItem,
-        removeItem,
-        updateQuantity,
-        clearCart,
-        toggleCart,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  )
+  const value: CartContextType = {
+    items,
+    cartCount,
+    totalPrice,
+    isCartOpen,
+    addItem,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    toggleCart,
+  }
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>
 }
 
-export function useCart() {
+export function useCart(): CartContextType {
   const context = useContext(CartContext)
-  if (context === undefined) {
-    throw new Error("useCart must be used within a CartProvider")
+
+  if (!context) {
+    throw new Error(
+      "useCart must be used within a CartProvider. Make sure your component is wrapped with CartProvider in your app layout or _app file.",
+    )
   }
+
   return context
 }

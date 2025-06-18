@@ -1,142 +1,63 @@
 "use client"
 
-import { useSearch } from "@/components/search/search-provider"
-import { useCart } from "@/components/cart/cart-provider"
-import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { X, Search, Loader2 } from "lucide-react"
-import Image from "next/image"
-import Link from "next/link"
-import { useEffect, useRef } from "react"
-import { formatPrice } from "@/lib/utils"
+import { Search } from "lucide-react"
+import { useSearch } from "@/components/search/search-provider"
+import { useState } from "react"
 
 export function SearchDialog() {
-  const { searchQuery, searchResults, isSearching, isSearchOpen, setSearchQuery, performSearch, toggleSearch } =
-    useSearch()
+  const { isSearchOpen, closeSearch, searchQuery, setSearchQuery } = useSearch()
+  const [results, setResults] = useState<any[]>([])
 
-  const { addItem } = useCart()
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  // Focus input when dialog opens
-  useEffect(() => {
-    if (isSearchOpen && inputRef.current) {
-      inputRef.current.focus()
+  const handleSearch = (query: string) => {
+    setSearchQuery(query)
+    // Mock search results
+    if (query.length > 0) {
+      setResults([
+        { id: 1, name: "Ethereal Resonance", artist: "Aria Luminova", type: "Digital Art" },
+        { id: 2, name: "Quantum Dreams", artist: "Neo Artist", type: "Sculpture" },
+      ])
+    } else {
+      setResults([])
     }
-  }, [isSearchOpen])
-
-  // Handle search on input change
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (searchQuery) {
-        performSearch()
-      }
-    }, 300)
-
-    return () => clearTimeout(handler)
-  }, [searchQuery, performSearch])
-
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isSearchOpen) {
-        toggleSearch()
-      }
-    }
-
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [isSearchOpen, toggleSearch])
-
-  if (!isSearchOpen) return null
+  }
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm">
-      <div className="absolute inset-0" onClick={toggleSearch} aria-hidden="true" />
+    <Dialog open={isSearchOpen} onOpenChange={closeSearch}>
+      <DialogContent className="sm:max-w-[600px]">
+        <DialogHeader>
+          <DialogTitle>Search Artworks</DialogTitle>
+        </DialogHeader>
+        <div className="space-y-4">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search for artworks, artists, or collections..."
+              value={searchQuery}
+              onChange={(e) => handleSearch(e.target.value)}
+              className="pl-10"
+            />
+          </div>
 
-      <div className="absolute left-1/2 top-24 w-full max-w-2xl -translate-x-1/2 rounded-xl bg-white shadow-2xl animate-in fade-in-0 zoom-in-95">
-        <div className="flex items-center border-b px-4 py-3">
-          <Search className="mr-2 h-5 w-5 text-muted-foreground" />
-          <Input
-            ref={inputRef}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search for artwork, artists, or styles..."
-            className="flex-1 border-0 bg-transparent p-0 focus-visible:ring-0"
-          />
-          <Button variant="ghost" size="icon" onClick={toggleSearch} aria-label="Close search">
-            <X className="h-5 w-5" />
-          </Button>
-        </div>
-
-        <div className="p-4">
-          {isSearching ? (
-            <div className="flex h-40 items-center justify-center">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : searchQuery && searchResults.length === 0 ? (
-            <div className="flex h-40 flex-col items-center justify-center">
-              <p className="text-center text-lg font-medium">No results found</p>
-              <p className="text-center text-sm text-muted-foreground">Try searching for something else</p>
-            </div>
-          ) : searchResults.length > 0 ? (
-            <ScrollArea className="h-[400px] pr-4">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                {searchResults.map((result) => (
-                  <div key={result.id} className="flex gap-3 rounded-lg border p-3">
-                    <div className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-md bg-muted">
-                      <Image src={result.image || "/placeholder.svg"} alt={result.name} fill className="object-cover" />
-                    </div>
-
-                    <div className="flex flex-1 flex-col">
-                      <Link
-                        href={`/artwork/${result.id}`}
-                        className="text-sm font-medium hover:underline"
-                        onClick={toggleSearch}
-                      >
-                        {result.name}
-                      </Link>
-                      <p className="text-xs text-muted-foreground">By {result.artist}</p>
-                      <p className="text-xs text-muted-foreground">{result.type}</p>
-                      <div className="mt-auto flex items-center justify-between">
-                        <p className="text-sm font-medium">{formatPrice(result.price)}</p>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 rounded-full text-xs"
-                          onClick={() => {
-                            addItem(result)
-                            toggleSearch()
-                          }}
-                        >
-                          Add to Bag
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
-          ) : (
-            <div className="py-6">
-              <h3 className="mb-2 text-sm font-medium">Popular Searches</h3>
-              <div className="flex flex-wrap gap-2">
-                {["Abstract", "Landscape", "Portrait", "Modern", "Photography"].map((term) => (
-                  <Button
-                    key={term}
-                    variant="outline"
-                    size="sm"
-                    className="rounded-full"
-                    onClick={() => setSearchQuery(term)}
-                  >
-                    {term}
-                  </Button>
-                ))}
-              </div>
+          {results.length > 0 && (
+            <div className="space-y-2 max-h-60 overflow-y-auto">
+              {results.map((result) => (
+                <div key={result.id} className="p-3 border rounded-lg hover:bg-gray-50 cursor-pointer">
+                  <h4 className="font-medium">{result.name}</h4>
+                  <p className="text-sm text-gray-600">
+                    by {result.artist} • {result.type}
+                  </p>
+                </div>
+              ))}
             </div>
           )}
+
+          {searchQuery && results.length === 0 && (
+            <div className="text-center py-8 text-gray-500">No results found for "{searchQuery}"</div>
+          )}
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 }

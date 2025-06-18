@@ -3,36 +3,69 @@
 import Link from "next/link"
 import { Search, ShoppingBag, User, Menu, X, Headset } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useCart } from "@/components/cart/cart-provider"
-import { useSearch } from "@/components/search/search-provider"
-import { useAuth } from "@/components/auth/auth-provider"
 import { useState, useEffect } from "react"
 import { CartDrawer } from "@/components/cart/cart-drawer"
 import { SearchDialog } from "@/components/search/search-dialog"
+import { AuthDialog } from "@/components/auth/auth-dialog"
 import { MobileNav } from "@/components/layout/mobile-nav"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
+import { useCart } from "@/components/cart/cart-provider"
+import { useSearch } from "@/components/search/search-provider"
+import { useAuth } from "@/components/auth/auth-provider"
 
 export function SiteHeader() {
-  const { cartCount, toggleCart, isCartOpen } = useCart()
-  const { toggleSearch, isSearchOpen } = useSearch()
-  const { user, openAuthDialog } = useAuth()
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
-  const pathname = usePathname()
+  const [isMounted, setIsMounted] = useState(false)
 
+  const pathname = usePathname()
   const isMetaversePage = pathname === "/metaverse"
 
+  const cart = useCart()
+  const search = useSearch()
+  const auth = useAuth()
+
+  // Initialize component
   useEffect(() => {
+    setIsMounted(true)
+
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10)
     }
+
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   const toggleMobileNav = () => {
     setIsMobileNavOpen(!isMobileNavOpen)
+  }
+
+  // Show loading state until mounted
+  if (!isMounted) {
+    return (
+      <header className="sticky top-0 z-50 w-full backdrop-blur-md bg-[#1a1a1a]/80">
+        <div className="mx-auto flex h-11 max-w-[1000px] items-center justify-between">
+          <div className="flex items-center">
+            <Link href="/" className="px-3 py-2">
+              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
+            </Link>
+          </div>
+          <div className="flex items-center">
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+              <Search className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+              <User className="h-4 w-4" />
+            </Button>
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+              <ShoppingBag className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </header>
+    )
   }
 
   return (
@@ -111,7 +144,7 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleSearch}
+              onClick={search.toggleSearch}
               className="px-3 py-2 text-white hover:text-white/80"
               aria-label="Search"
             >
@@ -120,7 +153,7 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={openAuthDialog}
+              onClick={auth.openAuthDialog}
               className="px-3 py-2 text-white hover:text-white/80"
               aria-label="Account"
             >
@@ -129,14 +162,14 @@ export function SiteHeader() {
             <Button
               variant="ghost"
               size="icon"
-              onClick={toggleCart}
+              onClick={cart.toggleCart}
               className="px-3 py-2 text-white hover:text-white/80 relative"
               aria-label="Shopping Bag"
             >
               <ShoppingBag className="h-4 w-4" />
-              {cartCount > 0 && (
+              {cart.cartCount > 0 && (
                 <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0071e3] text-[10px] font-medium text-white">
-                  {cartCount}
+                  {cart.cartCount}
                 </span>
               )}
             </Button>
@@ -152,6 +185,9 @@ export function SiteHeader() {
 
       {/* Search Dialog */}
       <SearchDialog />
+
+      {/* Auth Dialog */}
+      <AuthDialog />
     </>
   )
 }

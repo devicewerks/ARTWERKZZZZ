@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-
 import { useState, useEffect, useRef } from "react"
 import { Canvas } from "@react-three/fiber"
 import { Physics } from "@react-three/rapier"
@@ -25,11 +24,16 @@ export default function MetaversePage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isVRSupported, setIsVRSupported] = useState(false)
   const [showInfo, setShowInfo] = useState(true)
-  const { addItem } = useCart()
+  const [isMounted, setIsMounted] = useState(false)
   const cameraRef = useRef()
 
-  // Check if WebXR is supported
+  // Use cart hook
+  const cart = useCart()
+
   useEffect(() => {
+    setIsMounted(true)
+
+    // Check if WebXR is supported
     if (typeof navigator !== "undefined" && "xr" in navigator) {
       // @ts-ignore - navigator.xr is not in the TypeScript types yet
       navigator.xr
@@ -183,14 +187,27 @@ export default function MetaversePage() {
   ]
 
   const handleAddToCart = (artwork) => {
-    addItem({
-      id: artwork.id,
-      name: artwork.name,
-      artist: artwork.artist,
-      type: artwork.type,
-      price: artwork.price,
-      image: artwork.image,
-    })
+    if (isMounted) {
+      cart.addItem({
+        id: artwork.id,
+        name: artwork.name,
+        artist: artwork.artist,
+        type: artwork.type,
+        price: artwork.price,
+        image: artwork.image,
+      })
+    }
+  }
+
+  // Show loading until mounted
+  if (!isMounted) {
+    return (
+      <div className="flex min-h-screen flex-col bg-black">
+        <div className="flex-1 flex items-center justify-center">
+          <div className="text-white">Loading...</div>
+        </div>
+      </div>
+    )
   }
 
   return (

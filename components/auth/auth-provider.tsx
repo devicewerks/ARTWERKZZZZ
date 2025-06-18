@@ -1,114 +1,85 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react"
-import { AuthDialog } from "@/components/auth/auth-dialog"
+import { createContext, useContext, useState, type ReactNode } from "react"
 
 type User = {
   id: string
   name: string
   email: string
-} | null
-
-type AuthContextType = {
-  user: User
-  isAuthDialogOpen: boolean
-  openAuthDialog: () => void
-  closeAuthDialog: () => void
-  signIn: (email: string, password: string) => Promise<void>
-  signUp: (name: string, email: string, password: string) => Promise<void>
-  signOut: () => void
+  avatar?: string
 }
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined)
+type AuthContextType = {
+  user: User | null
+  isAuthOpen: boolean
+  openAuthDialog: () => void
+  closeAuthDialog: () => void
+  login: (email: string, password: string) => Promise<void>
+  logout: () => void
+  register: (name: string, email: string, password: string) => Promise<void>
+}
+
+const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User>(null)
-  const [isAuthDialogOpen, setIsAuthDialogOpen] = useState(false)
-
-  // Check for saved user on mount
-  useEffect(() => {
-    const savedUser = localStorage.getItem("user")
-    if (savedUser) {
-      try {
-        setUser(JSON.parse(savedUser))
-      } catch (error) {
-        console.error("Failed to parse user from localStorage:", error)
-      }
-    }
-  }, [])
+  const [user, setUser] = useState<User | null>(null)
+  const [isAuthOpen, setIsAuthOpen] = useState(false)
 
   const openAuthDialog = () => {
-    setIsAuthDialogOpen(true)
+    setIsAuthOpen(true)
   }
 
   const closeAuthDialog = () => {
-    setIsAuthDialogOpen(false)
+    setIsAuthOpen(false)
   }
 
-  const signIn = async (email: string, password: string) => {
-    // Simulate API call
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        // For demo purposes, accept any credentials
-        const newUser = {
-          id: "user-" + Math.random().toString(36).substr(2, 9),
-          name: email.split("@")[0],
-          email,
-        }
-
-        setUser(newUser)
-        localStorage.setItem("user", JSON.stringify(newUser))
-        closeAuthDialog()
-        resolve()
-      }, 1000)
+  const login = async (email: string, password: string) => {
+    // Mock login - in real app, this would call an API
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setUser({
+      id: "1",
+      name: "John Doe",
+      email,
+      avatar: "/placeholder-user.jpg",
     })
+    setIsAuthOpen(false)
   }
 
-  const signUp = async (name: string, email: string, password: string) => {
-    // Simulate API call
-    return new Promise<void>((resolve, reject) => {
-      setTimeout(() => {
-        const newUser = {
-          id: "user-" + Math.random().toString(36).substr(2, 9),
-          name,
-          email,
-        }
-
-        setUser(newUser)
-        localStorage.setItem("user", JSON.stringify(newUser))
-        closeAuthDialog()
-        resolve()
-      }, 1000)
-    })
-  }
-
-  const signOut = () => {
+  const logout = () => {
     setUser(null)
-    localStorage.removeItem("user")
   }
 
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        isAuthDialogOpen,
-        openAuthDialog,
-        closeAuthDialog,
-        signIn,
-        signUp,
-        signOut,
-      }}
-    >
-      {children}
-      <AuthDialog />
-    </AuthContext.Provider>
-  )
+  const register = async (name: string, email: string, password: string) => {
+    // Mock register - in real app, this would call an API
+    await new Promise((resolve) => setTimeout(resolve, 1000))
+    setUser({
+      id: "1",
+      name,
+      email,
+      avatar: "/placeholder-user.jpg",
+    })
+    setIsAuthOpen(false)
+  }
+
+  const value: AuthContextType = {
+    user,
+    isAuthOpen,
+    openAuthDialog,
+    closeAuthDialog,
+    login,
+    logout,
+    register,
+  }
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export function useAuth() {
+export function useAuth(): AuthContextType {
   const context = useContext(AuthContext)
-  if (context === undefined) {
+
+  if (!context) {
     throw new Error("useAuth must be used within an AuthProvider")
   }
+
   return context
 }

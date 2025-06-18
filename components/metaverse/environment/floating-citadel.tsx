@@ -4,9 +4,8 @@ import { useRef } from "react"
 import { useFrame } from "@react-three/fiber"
 import * as THREE from "three"
 
-// Create a brutalist-inspired floating citadel
 export function FloatingCitadel() {
-  const groupRef = useRef()
+  const groupRef = useRef<THREE.Group>(null)
 
   useFrame((state) => {
     if (groupRef.current) {
@@ -43,7 +42,7 @@ function MainPlatform() {
       {/* Core structure - obsidian-like platform */}
       <mesh position={[0, 0, 0]} receiveShadow castShadow>
         <cylinderGeometry args={[15, 18, 1, 32]} />
-        <meshStandardMaterial color="#000000" metalness={0.9} roughness={0.1} envMapIntensity={1} />
+        <meshStandardMaterial color="#000000" metalness={0.9} roughness={0.1} />
       </mesh>
 
       {/* Inner platform with glowing edges */}
@@ -74,7 +73,6 @@ function MainPlatform() {
 }
 
 function FloatingStructures() {
-  // Create several brutalist-style structures floating around the platform
   return (
     <group>
       {/* Larger central structure */}
@@ -94,8 +92,16 @@ function FloatingStructures() {
   )
 }
 
-function BrutalistStructure({ position = [0, 0, 0], scale = [1, 1, 1], rotation = [0, 0, 0] }) {
-  const structureRef = useRef()
+function BrutalistStructure({
+  position = [0, 0, 0],
+  scale = [1, 1, 1],
+  rotation = [0, 0, 0],
+}: {
+  position?: [number, number, number]
+  scale?: [number, number, number]
+  rotation?: [number, number, number]
+}) {
+  const structureRef = useRef<THREE.Group>(null)
 
   useFrame((state) => {
     if (structureRef.current) {
@@ -124,7 +130,7 @@ function BrutalistStructure({ position = [0, 0, 0], scale = [1, 1, 1], rotation 
         <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.2} />
       </mesh>
 
-      {/* Windows/cuts in the structure (brutalist style) */}
+      {/* Windows/cuts in the structure */}
       <mesh position={[0, 2, 1.76]} castShadow>
         <boxGeometry args={[2, 2.5, 0.1]} />
         <meshStandardMaterial
@@ -156,8 +162,16 @@ function BrutalistStructure({ position = [0, 0, 0], scale = [1, 1, 1], rotation 
   )
 }
 
-function FloatingPavilion({ position = [0, 0, 0], scale = [1, 1, 1], rotation = [0, 0, 0] }) {
-  const pavilionRef = useRef()
+function FloatingPavilion({
+  position = [0, 0, 0],
+  scale = [1, 1, 1],
+  rotation = [0, 0, 0],
+}: {
+  position?: [number, number, number]
+  scale?: [number, number, number]
+  rotation?: [number, number, number]
+}) {
+  const pavilionRef = useRef<THREE.Group>(null)
 
   useFrame((state) => {
     if (pavilionRef.current) {
@@ -176,16 +190,15 @@ function FloatingPavilion({ position = [0, 0, 0], scale = [1, 1, 1], rotation = 
         <meshStandardMaterial color="#444444" metalness={0.6} roughness={0.3} />
       </mesh>
 
-      {/* Glass dome */}
+      {/* Glass dome - using sphereGeometry with proper parameters */}
       <mesh position={[0, 1, 0]} castShadow>
-        <hemisphereGeometry args={[2.5, 2.5, 16, 8]} />
+        <sphereGeometry args={[2.5, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2]} />
         <meshPhysicalMaterial
           color="#ffffff"
           transmission={0.95}
           opacity={0.3}
           metalness={0.1}
           roughness={0}
-          envMapIntensity={1}
           clearcoat={1}
           clearcoatRoughness={0.1}
           transparent
@@ -197,7 +210,7 @@ function FloatingPavilion({ position = [0, 0, 0], scale = [1, 1, 1], rotation = 
 
       {/* Support columns */}
       {Array(6)
-        .fill()
+        .fill(null)
         .map((_, i) => {
           const angle = (i / 6) * Math.PI * 2
           return (
@@ -212,50 +225,39 @@ function FloatingPavilion({ position = [0, 0, 0], scale = [1, 1, 1], rotation = 
 }
 
 function TranslucentWalkways() {
-  const walkwayMaterialRef = useRef()
-
-  useFrame((state) => {
-    if (walkwayMaterialRef.current) {
-      // Animate the walkway glow
-      walkwayMaterialRef.current.opacity = 0.4 + Math.sin(state.clock.elapsedTime) * 0.1
-    }
-  })
-
   return (
     <group>
       {/* Main walkway to central structure */}
       <mesh position={[0, 0.2, -7.5]} rotation={[0, 0, 0]} receiveShadow>
         <boxGeometry args={[3, 0.1, 15]} />
         <meshPhysicalMaterial
-          ref={walkwayMaterialRef}
           color="#a78fff"
           roughness={0}
           metalness={0.2}
           transmission={0.9}
           opacity={0.5}
           transparent
-          envMapIntensity={1}
         />
       </mesh>
 
       {/* Connecting walkways */}
       <WalkwayConnection start={[0, 0.2, 0]} end={[-8, 2.1, -5]} width={1.5} />
-
       <WalkwayConnection start={[0, 0.2, 0]} end={[10, 3.1, -2]} width={1.5} />
-
       <WalkwayConnection start={[0, 0.2, 0]} end={[-5, 1.6, 8]} width={1.5} />
-
       <WalkwayConnection start={[0, 0.2, 0]} end={[7, 2.6, 7]} width={1.5} />
     </group>
   )
 }
 
-function WalkwayConnection({ start, end, width = 1 }) {
-  // Calculate the midpoint with elevation
-  const midX = (start[0] + end[0]) / 2
-  const midY = Math.max(start[1], end[1]) + 1 // Add some curve by elevating the middle
-  const midZ = (start[2] + end[2]) / 2
-
+function WalkwayConnection({
+  start,
+  end,
+  width = 1,
+}: {
+  start: [number, number, number]
+  end: [number, number, number]
+  width?: number
+}) {
   // Calculate the length of the walkway
   const length = Math.sqrt(
     Math.pow(end[0] - start[0], 2) + Math.pow(end[1] - start[1], 2) + Math.pow(end[2] - start[2], 2),
@@ -263,92 +265,24 @@ function WalkwayConnection({ start, end, width = 1 }) {
 
   // Calculate the rotation to point from start to end
   const direction = new THREE.Vector3(end[0] - start[0], end[1] - start[1], end[2] - start[2]).normalize()
-
-  // Create a quaternion from the direction
-  const quaternion = new THREE.Quaternion().setFromUnitVectors(
-    new THREE.Vector3(0, 0, 1), // Default direction
-    direction,
-  )
-
-  // Convert quaternion to Euler angles
+  const quaternion = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 0, 1), direction)
   const euler = new THREE.Euler().setFromQuaternion(quaternion)
 
   return (
     <group>
-      {/* Create a curved path using THREE.js curves */}
-      <mesh position={start} rotation={euler} receiveShadow>
-        <tubeGeometry
-          args={[
-            new THREE.CatmullRomCurve3([
-              new THREE.Vector3(0, 0, 0),
-              new THREE.Vector3(length / 4, midY - start[1], length / 4),
-              new THREE.Vector3(length / 2, midY - start[1], length / 2),
-              new THREE.Vector3(length, end[1] - start[1], length),
-            ]),
-            20, // tubular segments
-            width / 2, // radius
-            8, // radial segments
-            false, // closed
-          ]}
-        />
+      {/* Create a simple straight walkway */}
+      <mesh
+        position={[(start[0] + end[0]) / 2, (start[1] + end[1]) / 2, (start[2] + end[2]) / 2]}
+        rotation={[euler.x, euler.y, euler.z]}
+        receiveShadow
+      >
+        <boxGeometry args={[width, 0.1, length]} />
         <meshPhysicalMaterial
           color="#a78fff"
           roughness={0}
           metalness={0.2}
           transmission={0.9}
           opacity={0.5}
-          transparent
-          envMapIntensity={1}
-        />
-      </mesh>
-
-      {/* Railings (holographic) */}
-      <mesh position={start} rotation={euler} receiveShadow>
-        <tubeGeometry
-          args={[
-            new THREE.CatmullRomCurve3([
-              new THREE.Vector3(width / 2, 0.5, 0),
-              new THREE.Vector3(width / 2, midY - start[1] + 0.5, length / 2),
-              new THREE.Vector3(width / 2, end[1] - start[1] + 0.5, length),
-            ]),
-            20, // tubular segments
-            0.05, // radius
-            8, // radial segments
-            false, // closed
-          ]}
-        />
-        <meshPhysicalMaterial
-          color="#ffffff"
-          emissive="#a78fff"
-          emissiveIntensity={0.5}
-          roughness={0}
-          metalness={0.1}
-          opacity={0.3}
-          transparent
-        />
-      </mesh>
-
-      <mesh position={start} rotation={euler} receiveShadow>
-        <tubeGeometry
-          args={[
-            new THREE.CatmullRomCurve3([
-              new THREE.Vector3(-width / 2, 0.5, 0),
-              new THREE.Vector3(-width / 2, midY - start[1] + 0.5, length / 2),
-              new THREE.Vector3(-width / 2, end[1] - start[1] + 0.5, length),
-            ]),
-            20, // tubular segments
-            0.05, // radius
-            8, // radial segments
-            false, // closed
-          ]}
-        />
-        <meshPhysicalMaterial
-          color="#ffffff"
-          emissive="#a78fff"
-          emissiveIntensity={0.5}
-          roughness={0}
-          metalness={0.1}
-          opacity={0.3}
           transparent
         />
       </mesh>
@@ -357,12 +291,14 @@ function WalkwayConnection({ start, end, width = 1 }) {
 }
 
 function HoverLights() {
-  const lightRefs = useRef([])
+  const lightRefs = useRef<(THREE.PointLight | null)[]>([])
 
   useFrame((state) => {
     lightRefs.current.forEach((light, i) => {
       if (light) {
         // Animate lights
+        const angle = (i / 8) * Math.PI * 2
+        const radius = 12
         light.position.y = 1.5 + Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.2
         light.intensity = 0.5 + Math.sin(state.clock.elapsedTime + i * 1.5) * 0.2
       }
@@ -373,7 +309,7 @@ function HoverLights() {
     <group>
       {/* Create multiple hover lights distributed around the citadel */}
       {Array(8)
-        .fill()
+        .fill(null)
         .map((_, i) => {
           const angle = (i / 8) * Math.PI * 2
           const radius = 12

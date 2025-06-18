@@ -1,6 +1,12 @@
 {
-  "name": "ARTWERKZZZZ",
+  "name": "ARTWERKZZZZ INC",
   "short_name": "ARTWERKZZZZ",
+  "description": "Metaverse Art Gallery - Discover and collect exceptional artwork",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#000000",
+  "orientation": "portrait-primary",
   "icons": [
     {
       "src": "/favicon-16x16.png",
@@ -18,7 +24,6 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
-  "display": "standalone"
+  "categories": ["art", "gallery", "metaverse", "shopping"],
+  "lang": "en-US"
 }

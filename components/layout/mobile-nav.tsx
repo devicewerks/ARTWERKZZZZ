@@ -1,9 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import Link from "next/link"
-import { ChevronDown, ChevronRight, Headset } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Headset, Home, Palette, Shapes, Monitor, Layers, Users } from "lucide-react"
 
 interface MobileNavProps {
   isOpen: boolean
@@ -11,143 +10,40 @@ interface MobileNavProps {
 }
 
 export function MobileNav({ isOpen, onClose }: MobileNavProps) {
-  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null)
-
-  // Close mobile nav when clicking outside or pressing escape
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose()
-    }
-
-    document.addEventListener("keydown", handleEscape)
-    return () => document.removeEventListener("keydown", handleEscape)
-  }, [onClose])
-
-  // Prevent scrolling when mobile nav is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden"
-    } else {
-      document.body.style.overflow = ""
-    }
-    return () => {
-      document.body.style.overflow = ""
-    }
-  }, [isOpen])
-
-  const toggleSubmenu = (menu: string) => {
-    setOpenSubmenu(openSubmenu === menu ? null : menu)
-  }
-
-  if (!isOpen) return null
+  const navItems = [
+    { href: "/", label: "Home", icon: Home },
+    { href: "/store", label: "Store", icon: Palette },
+    { href: "/paintings", label: "Paintings", icon: Palette },
+    { href: "/sculptures", label: "Sculptures", icon: Shapes },
+    { href: "/digital", label: "Digital", icon: Monitor },
+    { href: "/collections", label: "Collections", icon: Layers },
+    { href: "/artists", label: "Artists", icon: Users },
+    { href: "/metaverse", label: "Metaverse", icon: Headset },
+  ]
 
   return (
-    <div className="fixed inset-0 z-40 bg-black/90 backdrop-blur-sm overflow-y-auto">
-      <div className="pt-16 pb-8 px-6">
-        <nav className="space-y-6">
-          <div className="border-b border-white/10 pb-6">
-            <Link href="/store" className="block py-2 text-lg font-medium text-white" onClick={onClose}>
-              Store
-            </Link>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <div
-              className="flex items-center justify-between py-2 text-lg font-medium text-white"
-              onClick={() => toggleSubmenu("paintings")}
-            >
-              <span>Paintings</span>
-              {openSubmenu === "paintings" ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
-            </div>
-
-            <div
-              className={cn(
-                "mt-2 ml-4 space-y-2 overflow-hidden transition-all duration-300",
-                openSubmenu === "paintings" ? "max-h-96" : "max-h-0",
-              )}
-            >
-              <Link href="/paintings/abstract" className="block py-1 text-white/80" onClick={onClose}>
-                Abstract
+    <Sheet open={isOpen} onOpenChange={onClose}>
+      <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+        <SheetHeader>
+          <SheetTitle>Navigation</SheetTitle>
+        </SheetHeader>
+        <nav className="flex flex-col space-y-4 mt-6">
+          {navItems.map((item) => {
+            const Icon = item.icon
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                className="flex items-center space-x-3 text-lg font-medium hover:text-[#0071e3] transition-colors"
+              >
+                <Icon className="h-5 w-5" />
+                <span>{item.label}</span>
               </Link>
-              <Link href="/paintings/landscapes" className="block py-1 text-white/80" onClick={onClose}>
-                Landscapes
-              </Link>
-              <Link href="/paintings/portraits" className="block py-1 text-white/80" onClick={onClose}>
-                Portraits
-              </Link>
-              <Link href="/paintings/all" className="block py-1 text-white/80" onClick={onClose}>
-                View All Paintings
-              </Link>
-            </div>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <div
-              className="flex items-center justify-between py-2 text-lg font-medium text-white"
-              onClick={() => toggleSubmenu("sculptures")}
-            >
-              <span>Sculptures</span>
-              {openSubmenu === "sculptures" ? (
-                <ChevronDown className="h-5 w-5" />
-              ) : (
-                <ChevronRight className="h-5 w-5" />
-              )}
-            </div>
-
-            <div
-              className={cn(
-                "mt-2 ml-4 space-y-2 overflow-hidden transition-all duration-300",
-                openSubmenu === "sculptures" ? "max-h-96" : "max-h-0",
-              )}
-            >
-              <Link href="/sculptures/modern" className="block py-1 text-white/80" onClick={onClose}>
-                Modern
-              </Link>
-              <Link href="/sculptures/classical" className="block py-1 text-white/80" onClick={onClose}>
-                Classical
-              </Link>
-              <Link href="/sculptures/all" className="block py-1 text-white/80" onClick={onClose}>
-                View All Sculptures
-              </Link>
-            </div>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <Link href="/digital" className="block py-2 text-lg font-medium text-white" onClick={onClose}>
-              Digital
-            </Link>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <Link href="/collections" className="block py-2 text-lg font-medium text-white" onClick={onClose}>
-              Collections
-            </Link>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <Link href="/artists" className="block py-2 text-lg font-medium text-white" onClick={onClose}>
-              Artists
-            </Link>
-          </div>
-
-          <div className="border-b border-white/10 pb-6">
-            <Link
-              href="/metaverse"
-              className="flex items-center gap-2 py-2 text-lg font-medium text-white"
-              onClick={onClose}
-            >
-              <Headset className="h-5 w-5" />
-              Metaverse Gallery
-            </Link>
-          </div>
-
-          <div>
-            <Link href="/support" className="block py-2 text-lg font-medium text-white" onClick={onClose}>
-              Support
-            </Link>
-          </div>
+            )
+          })}
         </nav>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   )
 }
