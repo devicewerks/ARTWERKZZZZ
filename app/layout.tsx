@@ -10,11 +10,15 @@ export const metadata: Metadata = {
   title: "ARTWERKZZZZ INC | Metaverse Art Gallery",
   description:
     "Discover and collect exceptional artwork in our immersive metaverse gallery. Browse paintings, sculptures, digital art, and more from talented artists worldwide.",
-  keywords: "art gallery, metaverse, digital art, paintings, sculptures, NFT, virtual reality, art collection",
+  keywords:
+    "art gallery, metaverse, digital art, paintings, sculptures, NFT, virtual reality, art collection, contemporary art, fine art, online gallery",
   authors: [{ name: "ARTWERKZZZZ INC" }],
   creator: "ARTWERKZZZZ INC",
   publisher: "ARTWERKZZZZ INC",
   robots: "index, follow",
+  alternates: {
+    canonical: "https://artwerkzzzz.com",
+  },
   openGraph: {
     type: "website",
     locale: "en_US",
@@ -36,6 +40,8 @@ export const metadata: Metadata = {
     title: "ARTWERKZZZZ INC | Metaverse Art Gallery",
     description: "Discover and collect exceptional artwork in our immersive metaverse gallery",
     images: ["/images/og-image.jpg"],
+    creator: "@artwerkzzzz",
+    site: "@artwerkzzzz",
   },
   icons: {
     icon: [
@@ -55,6 +61,12 @@ export const metadata: Metadata = {
     telephone: false,
   },
   manifest: "/site.webmanifest",
+  verification: {
+    google: "your-google-verification-code",
+    yandex: "your-yandex-verification-code",
+    yahoo: "your-yahoo-verification-code",
+  },
+  category: "Art Gallery",
 }
 
 export default function RootLayout({
@@ -67,6 +79,11 @@ export default function RootLayout({
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
         <meta name="theme-color" content="#000000" />
+        <link
+          rel="preload"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          as="style"
+        />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
         <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
@@ -74,6 +91,31 @@ export default function RootLayout({
         <link rel="manifest" href="/site.webmanifest" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "ARTWERKZZZZ INC",
+              url: "https://artwerkzzzz.com",
+              logo: "https://artwerkzzzz.com/images/znzn-logo.png",
+              description:
+                "Discover and collect exceptional artwork in our immersive metaverse gallery. Browse paintings, sculptures, digital art, and more from talented artists worldwide.",
+              sameAs: [
+                "https://facebook.com/artwerkzzzz",
+                "https://twitter.com/artwerkzzzz",
+                "https://instagram.com/artwerkzzzz",
+                "https://youtube.com/artwerkzzzz",
+              ],
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                url: "https://artwerkzzzz.com/contact",
+              },
+            }),
+          }}
+        />
       </head>
       <body className={inter.className}>
         <Providers>{children}</Providers>

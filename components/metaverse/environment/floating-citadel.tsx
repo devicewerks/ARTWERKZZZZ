@@ -39,34 +39,42 @@ export function FloatingCitadel() {
 function MainPlatform() {
   return (
     <group>
-      {/* Core structure - obsidian-like platform */}
       <mesh position={[0, 0, 0]} receiveShadow castShadow>
-        <cylinderGeometry args={[15, 18, 1, 32]} />
-        <meshStandardMaterial color="#000000" metalness={0.9} roughness={0.1} />
-      </mesh>
-
-      {/* Inner platform with glowing edges */}
-      <mesh position={[0, 0.1, 0]} receiveShadow>
-        <cylinderGeometry args={[14, 14, 0.2, 32]} />
+        <cylinderGeometry args={[22, 25, 1.5, 32]} />
         <meshStandardMaterial
-          color="#140022"
-          emissive="#32004d"
-          emissiveIntensity={0.5}
-          metalness={0.8}
-          roughness={0.2}
+          color="#000000"
+          metalness={0.9}
+          roughness={0.05}
+          emissive="#001122"
+          emissiveIntensity={0.1}
         />
       </mesh>
 
-      {/* Decorative center piece */}
-      <mesh position={[0, 0.3, 0]} castShadow>
-        <torusGeometry args={[5, 0.2, 16, 32]} />
+      <mesh position={[0, 0.2, 0]} receiveShadow>
+        <cylinderGeometry args={[20, 20, 0.3, 32]} />
         <meshStandardMaterial
-          color="#a78fff"
-          emissive="#7b61ff"
-          emissiveIntensity={1}
-          metalness={0.9}
+          color="#0a0a2e"
+          emissive="#1a0040"
+          emissiveIntensity={0.7}
+          metalness={0.8}
           roughness={0.1}
         />
+      </mesh>
+
+      <mesh position={[0, 0.5, 0]} castShadow>
+        <torusGeometry args={[8, 0.4, 16, 32]} />
+        <meshStandardMaterial
+          color="#00ffff"
+          emissive="#00ffff"
+          emissiveIntensity={1.2}
+          metalness={0.9}
+          roughness={0}
+        />
+      </mesh>
+
+      <mesh position={[0, 0.6, 0]} castShadow>
+        <torusGeometry args={[6, 0.2, 16, 32]} />
+        <meshStandardMaterial color="#ff00ff" emissive="#ff00ff" emissiveIntensity={0.8} metalness={1} roughness={0} />
       </mesh>
     </group>
   )
@@ -75,19 +83,17 @@ function MainPlatform() {
 function FloatingStructures() {
   return (
     <group>
-      {/* Larger central structure */}
-      <BrutalistStructure position={[0, 1, 0]} scale={[1.5, 2, 1.5]} rotation={[0, Math.PI / 4, 0]} />
+      <BrutalistStructure position={[0, 1.5, 0]} scale={[2, 2.5, 2]} rotation={[0, Math.PI / 4, 0]} />
 
-      {/* Surrounding smaller structures */}
-      <BrutalistStructure position={[-8, 2, -5]} scale={[0.8, 1.5, 0.8]} rotation={[0, Math.PI / 6, 0]} />
-      <BrutalistStructure position={[10, 3, -2]} scale={[1, 1.8, 1]} rotation={[0, -Math.PI / 5, 0]} />
-      <BrutalistStructure position={[-5, 1.5, 8]} scale={[0.7, 1.2, 0.7]} rotation={[0, Math.PI / 3, 0]} />
-      <BrutalistStructure position={[7, 2.5, 7]} scale={[0.9, 1.4, 0.9]} rotation={[0, -Math.PI / 4, 0]} />
+      {/* Surrounding structures with increased spacing */}
+      <BrutalistStructure position={[-12, 3, -8]} scale={[1.2, 2, 1.2]} rotation={[0, Math.PI / 6, 0]} />
+      <BrutalistStructure position={[15, 4, -5]} scale={[1.4, 2.2, 1.4]} rotation={[0, -Math.PI / 5, 0]} />
+      <BrutalistStructure position={[-8, 2.5, 12]} scale={[1, 1.8, 1]} rotation={[0, Math.PI / 3, 0]} />
+      <BrutalistStructure position={[12, 3.5, 10]} scale={[1.3, 2, 1.3]} rotation={[0, -Math.PI / 4, 0]} />
 
-      {/* Floating pavilions */}
-      <FloatingPavilion position={[-12, 4, 0]} scale={[1, 1, 1]} />
-      <FloatingPavilion position={[12, 5, -2]} scale={[1.2, 1, 1.2]} rotation={[0, Math.PI / 6, 0]} />
-      <FloatingPavilion position={[0, 6, -15]} scale={[1.5, 1, 1.5]} rotation={[0, Math.PI / 8, 0]} />
+      <FloatingPavilion position={[-18, 5, -5]} scale={[1.5, 1, 1.5]} />
+      <FloatingPavilion position={[18, 6, -8]} scale={[1.8, 1, 1.8]} rotation={[0, Math.PI / 6, 0]} />
+      <FloatingPavilion position={[0, 8, -25]} scale={[2, 1, 2]} rotation={[0, Math.PI / 8, 0]} />
     </group>
   )
 }
@@ -106,58 +112,73 @@ function BrutalistStructure({
   useFrame((state) => {
     if (structureRef.current) {
       // Very subtle floating motion
-      structureRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.3 + position[0]) * 0.1
+      structureRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 0.3 + position[0]) * 0.15
     }
   })
 
   return (
     <group ref={structureRef} position={position} scale={scale} rotation={rotation}>
-      {/* Base */}
       <mesh castShadow receiveShadow>
-        <boxGeometry args={[4, 0.5, 4]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.2} />
-      </mesh>
-
-      {/* Main structure body */}
-      <mesh position={[0, 2, 0]} castShadow>
-        <boxGeometry args={[3.5, 4, 3.5]} />
-        <meshStandardMaterial color="#333333" metalness={0.6} roughness={0.3} />
-      </mesh>
-
-      {/* Top */}
-      <mesh position={[0, 4.5, 0]} castShadow>
-        <boxGeometry args={[4, 0.5, 4]} />
-        <meshStandardMaterial color="#1a1a1a" metalness={0.7} roughness={0.2} />
-      </mesh>
-
-      {/* Windows/cuts in the structure */}
-      <mesh position={[0, 2, 1.76]} castShadow>
-        <boxGeometry args={[2, 2.5, 0.1]} />
+        <boxGeometry args={[5, 0.8, 5]} />
         <meshStandardMaterial
-          color="#000000"
-          emissive="#150033"
-          emissiveIntensity={0.5}
-          metalness={0.9}
+          color="#1a1a2e"
+          metalness={0.8}
           roughness={0.1}
-          opacity={0.7}
-          transparent
-        />
-      </mesh>
-      <mesh position={[1.76, 2, 0]} castShadow rotation={[0, Math.PI / 2, 0]}>
-        <boxGeometry args={[2, 2.5, 0.1]} />
-        <meshStandardMaterial
-          color="#000000"
-          emissive="#150033"
-          emissiveIntensity={0.5}
-          metalness={0.9}
-          roughness={0.1}
-          opacity={0.7}
-          transparent
+          emissive="#001122"
+          emissiveIntensity={0.2}
         />
       </mesh>
 
-      {/* Accent light */}
-      <pointLight position={[0, 3, 0]} intensity={0.3} color="#a78fff" distance={5} />
+      {/* Main structure body with improved textures */}
+      <mesh position={[0, 2.5, 0]} castShadow>
+        <boxGeometry args={[4.5, 5, 4.5]} />
+        <meshStandardMaterial
+          color="#2a2a4e"
+          metalness={0.7}
+          roughness={0.2}
+          emissive="#000033"
+          emissiveIntensity={0.1}
+        />
+      </mesh>
+
+      <mesh position={[0, 5.5, 0]} castShadow>
+        <boxGeometry args={[5, 0.8, 5]} />
+        <meshStandardMaterial
+          color="#1a1a2e"
+          metalness={0.8}
+          roughness={0.1}
+          emissive="#00ffff"
+          emissiveIntensity={0.3}
+        />
+      </mesh>
+
+      <mesh position={[0, 2.5, 2.26]} castShadow>
+        <boxGeometry args={[3, 3.5, 0.1]} />
+        <meshStandardMaterial
+          color="#000000"
+          emissive="#00ffff"
+          emissiveIntensity={0.8}
+          metalness={0.9}
+          roughness={0}
+          opacity={0.8}
+          transparent
+        />
+      </mesh>
+      <mesh position={[2.26, 2.5, 0]} castShadow rotation={[0, Math.PI / 2, 0]}>
+        <boxGeometry args={[3, 3.5, 0.1]} />
+        <meshStandardMaterial
+          color="#000000"
+          emissive="#ff00ff"
+          emissiveIntensity={0.8}
+          metalness={0.9}
+          roughness={0}
+          opacity={0.8}
+          transparent
+        />
+      </mesh>
+
+      <pointLight position={[0, 4, 0]} intensity={0.5} color="#00ffff" distance={8} />
+      <pointLight position={[0, 1, 0]} intensity={0.3} color="#ff00ff" distance={6} />
     </group>
   )
 }
@@ -296,43 +317,40 @@ function HoverLights() {
   useFrame((state) => {
     lightRefs.current.forEach((light, i) => {
       if (light) {
-        // Animate lights
-        const angle = (i / 8) * Math.PI * 2
-        const radius = 12
-        light.position.y = 1.5 + Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.2
-        light.intensity = 0.5 + Math.sin(state.clock.elapsedTime + i * 1.5) * 0.2
+        const angle = (i / 12) * Math.PI * 2
+        const radius = 18
+        light.position.y = 2 + Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.4
+        light.intensity = 0.7 + Math.sin(state.clock.elapsedTime + i * 1.5) * 0.3
       }
     })
   })
 
   return (
     <group>
-      {/* Create multiple hover lights distributed around the citadel */}
-      {Array(8)
+      {Array(12)
         .fill(null)
         .map((_, i) => {
-          const angle = (i / 8) * Math.PI * 2
-          const radius = 12
+          const angle = (i / 12) * Math.PI * 2
+          const radius = 18
 
           return (
             <group key={i}>
               <pointLight
                 ref={(el) => (lightRefs.current[i] = el)}
-                position={[Math.cos(angle) * radius, 1.5, Math.sin(angle) * radius]}
-                intensity={0.5}
-                color={i % 2 === 0 ? "#a78fff" : "#e8b27d"}
-                distance={8}
+                position={[Math.cos(angle) * radius, 2, Math.sin(angle) * radius]}
+                intensity={0.7}
+                color={i % 3 === 0 ? "#00ffff" : i % 3 === 1 ? "#ff00ff" : "#ffff00"}
+                distance={12}
                 castShadow
               />
-              {/* Light housing */}
-              <mesh position={[Math.cos(angle) * radius, 1.5, Math.sin(angle) * radius]} castShadow>
-                <sphereGeometry args={[0.2, 16, 16]} />
+              <mesh position={[Math.cos(angle) * radius, 2, Math.sin(angle) * radius]} castShadow>
+                <sphereGeometry args={[0.3, 16, 16]} />
                 <meshStandardMaterial
-                  color={i % 2 === 0 ? "#a78fff" : "#e8b27d"}
-                  emissive={i % 2 === 0 ? "#a78fff" : "#e8b27d"}
-                  emissiveIntensity={0.8}
+                  color={i % 3 === 0 ? "#00ffff" : i % 3 === 1 ? "#ff00ff" : "#ffff00"}
+                  emissive={i % 3 === 0 ? "#00ffff" : i % 3 === 1 ? "#ff00ff" : "#ffff00"}
+                  emissiveIntensity={1.2}
                   metalness={0.9}
-                  roughness={0.1}
+                  roughness={0}
                 />
               </mesh>
             </group>

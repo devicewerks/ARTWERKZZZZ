@@ -1,19 +1,51 @@
 "use client"
 
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { X } from "lucide-react"
+import { useEffect } from "react"
 
 interface MetaverseInfoProps {
   onClose: () => void
 }
 
 export function MetaverseInfo({ onClose }: MetaverseInfoProps) {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose()
+      }
+    }
+
+    document.addEventListener("keydown", handleEscape)
+    return () => document.removeEventListener("keydown", handleEscape)
+  }, [onClose])
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
+
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-white rounded-xl p-6 max-w-md w-full">
+    <div
+      className="fixed inset-0 z-[9999] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
+      onClick={handleBackdropClick}
+    >
+      <div className="bg-white rounded-xl p-6 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Welcome to the Metaverse Gallery</h2>
-          <Button variant="ghost" size="icon" onClick={onClose}>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onClose()
+            }}
+            className="hover:bg-gray-100"
+          >
             <X className="h-5 w-5" />
           </Button>
         </div>
@@ -55,7 +87,14 @@ export function MetaverseInfo({ onClose }: MetaverseInfoProps) {
           </div>
         </div>
 
-        <Button onClick={onClose} className="w-full mt-6 rounded-full bg-[#0071e3] hover:bg-[#0077ED]">
+        <Button
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            onClose()
+          }}
+          className="w-full mt-6 rounded-full bg-[#0071e3] hover:bg-[#0077ED]"
+        >
           Start Exploring
         </Button>
       </div>

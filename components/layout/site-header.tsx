@@ -49,17 +49,21 @@ export function SiteHeader() {
         <div className="mx-auto flex h-11 max-w-[1000px] items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="px-3 py-2">
-              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
+              <img
+                src="/images/znzn-logo.png"
+                alt="ARTWERKZZZZ - Premium Art Gallery Logo"
+                className="h-5 w-5 invert"
+              />
             </Link>
           </div>
           <div className="flex items-center">
-            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Search artworks">
               <Search className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="User account">
               <User className="h-4 w-4" />
             </Button>
-            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Loading">
+            <Button variant="ghost" size="icon" className="px-3 py-2 text-white" aria-label="Shopping cart">
               <ShoppingBag className="h-4 w-4" />
             </Button>
           </div>
@@ -75,17 +79,33 @@ export function SiteHeader() {
           "sticky top-0 z-50 w-full backdrop-blur-md transition-colors duration-200",
           isScrolled ? "bg-[#1a1a1a]/90" : "bg-[#1a1a1a]/80",
         )}
+        role="banner"
       >
         <div className="mx-auto flex h-11 max-w-[1000px] items-center justify-between">
           <div className="md:hidden pl-4">
-            <Button variant="ghost" size="icon" onClick={toggleMobileNav} className="text-white">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMobileNav}
+              className="text-white"
+              aria-label={isMobileNavOpen ? "Close navigation menu" : "Open navigation menu"}
+              aria-expanded={isMobileNavOpen}
+            >
               {isMobileNavOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
 
-          <nav className="hidden md:flex w-full items-center justify-center">
-            <Link href="/" className="px-3 py-2">
-              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
+          <nav
+            className="hidden md:flex w-full items-center justify-center"
+            role="navigation"
+            aria-label="Main navigation"
+          >
+            <Link href="/" className="px-3 py-2" aria-label="ARTWERKZZZZ homepage">
+              <img
+                src="/images/znzn-logo.png"
+                alt="ARTWERKZZZZ - Premium Art Gallery Logo"
+                className="h-5 w-5 invert"
+              />
             </Link>
             <Link
               href="/store"
@@ -128,6 +148,7 @@ export function SiteHeader() {
               className={`px-3 py-2 text-xs font-normal transition-colors flex items-center gap-1 ${
                 isMetaversePage ? "text-[#0071e3]" : "text-white hover:text-white/80"
               }`}
+              aria-label="Enter Metaverse Gallery"
             >
               <Headset className="h-3 w-3" />
               Metaverse
@@ -135,8 +156,12 @@ export function SiteHeader() {
           </nav>
 
           <div className="flex items-center md:hidden">
-            <Link href="/" className="px-3 py-2">
-              <img src="/images/znzn-logo.png" alt="ARTWERKZZZZ Logo" className="h-5 w-5 invert" />
+            <Link href="/" className="px-3 py-2" aria-label="ARTWERKZZZZ homepage">
+              <img
+                src="/images/znzn-logo.png"
+                alt="ARTWERKZZZZ - Premium Art Gallery Logo"
+                className="h-5 w-5 invert"
+              />
             </Link>
           </div>
 
@@ -146,7 +171,7 @@ export function SiteHeader() {
               size="icon"
               onClick={search.toggleSearch}
               className="px-3 py-2 text-white hover:text-white/80"
-              aria-label="Search"
+              aria-label="Search artworks and collections"
             >
               <Search className="h-4 w-4" />
             </Button>
@@ -155,7 +180,7 @@ export function SiteHeader() {
               size="icon"
               onClick={auth.openAuthDialog}
               className="px-3 py-2 text-white hover:text-white/80"
-              aria-label="Account"
+              aria-label="User account and authentication"
             >
               <User className="h-4 w-4" />
             </Button>
@@ -164,11 +189,14 @@ export function SiteHeader() {
               size="icon"
               onClick={cart.toggleCart}
               className="px-3 py-2 text-white hover:text-white/80 relative"
-              aria-label="Shopping Bag"
+              aria-label={`Shopping cart with ${cart.cartCount} items`}
             >
               <ShoppingBag className="h-4 w-4" />
               {cart.cartCount > 0 && (
-                <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0071e3] text-[10px] font-medium text-white">
+                <span
+                  className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#0071e3] text-[10px] font-medium text-white"
+                  aria-label={`${cart.cartCount} items in cart`}
+                >
                   {cart.cartCount}
                 </span>
               )}

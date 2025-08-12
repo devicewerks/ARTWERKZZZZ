@@ -1,0 +1,25 @@
+# Robots.txt for ARTWERKZZZZ.com
+User-agent: *
+Allow: /
+
+# Allow crawling of key pages
+Allow: /artwork/
+Allow: /collections/
+Allow: /artists/
+Allow: /store/
+Allow: /paintings/
+Allow: /sculptures/
+Allow: /digital/
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout/
+Disallow: /account/
+Disallow: /cart/
+
+# Sitemap location
+Sitemap: https://artwerkzzzz.com/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1

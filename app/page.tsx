@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ProductCard } from "@/components/product/product-card"
 import { Headset } from "lucide-react"
+import type { Metadata } from "next"
 
 // Mock artwork data
 const featuredArtworks = [
@@ -54,6 +55,26 @@ const featuredArtworks = [
   },
 ]
 
+export const metadata: Metadata = {
+  title: "ARTWERKZZZZ | Premium Art Gallery & Metaverse Experience",
+  description:
+    "Explore our curated collection of contemporary paintings, sculptures, and digital art. Experience art like never before in our immersive metaverse gallery.",
+  keywords:
+    "art gallery, contemporary art, paintings, sculptures, digital art, metaverse gallery, art collection, fine art, abstract art",
+  openGraph: {
+    title: "ARTWERKZZZZ | Premium Art Gallery & Metaverse Experience",
+    description: "Explore our curated collection of contemporary paintings, sculptures, and digital art.",
+    images: [
+      {
+        url: "/images/homepage-hero.jpg",
+        width: 1200,
+        height: 630,
+        alt: "ARTWERKZZZZ Art Gallery Homepage",
+      },
+    ],
+  },
+}
+
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col bg-white">
@@ -62,6 +83,23 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero Section - Mother's Day Style with Abstract Elements */}
         <section className="relative bg-[#f5f5f7] py-16 overflow-hidden">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                name: "ARTWERKZZZZ",
+                url: "https://artwerkzzzz.com",
+                potentialAction: {
+                  "@type": "SearchAction",
+                  target: "https://artwerkzzzz.com/search?q={search_term_string}",
+                  "query-input": "required name=search_term_string",
+                },
+              }),
+            }}
+          />
+
           {/* Abstract decorative elements */}
           <div className="absolute inset-0 z-0">
             <div className="h-8 w-8 rounded-full bg-pink-400 absolute top-1/4 left-1/4 opacity-70"></div>
@@ -103,7 +141,7 @@ export default function Home() {
               <Link href="/metaverse">
                 <Button
                   variant="outline"
-                  className="rounded-full border-[#0071e3] px-6 py-2 text-sm font-medium text-[#0071e3] flex items-center gap-2"
+                  className="rounded-full border-[#0071e3] px-6 py-2 text-sm font-medium text-[#0071e3] flex items-center gap-2 bg-transparent"
                 >
                   <Headset className="h-4 w-4" />
                   Enter Metaverse
@@ -130,7 +168,10 @@ export default function Home() {
                       Enter Gallery
                     </Button>
                   </Link>
-                  <Button variant="outline" className="rounded-full text-white border-white hover:bg-white/10">
+                  <Button
+                    variant="outline"
+                    className="rounded-full text-white border-white hover:bg-white/10 bg-transparent"
+                  >
                     Learn More
                   </Button>
                 </div>
@@ -139,9 +180,10 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent z-10"></div>
                 <Image
                   src="https://images.unsplash.com/photo-1626544827763-d516dce335e2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                  alt="Virtual art gallery"
+                  alt="Virtual art gallery experience showing immersive 3D environment"
                   fill
                   className="object-cover"
+                  priority
                 />
                 <div className="absolute bottom-4 left-4 z-20">
                   <div className="bg-black/50 backdrop-blur-md rounded-lg px-3 py-2 text-sm">
@@ -170,7 +212,7 @@ export default function Home() {
               <Link href="/store/abstract">
                 <Button
                   variant="outline"
-                  className="w-full sm:w-auto mt-2 sm:mt-0 rounded-full border-[#0071e3] px-6 py-2 text-sm font-medium text-[#0071e3]"
+                  className="w-full sm:w-auto mt-2 sm:mt-0 rounded-full border-[#0071e3] px-6 py-2 text-sm font-medium text-[#0071e3] bg-transparent"
                 >
                   Shop Abstract
                 </Button>
@@ -184,7 +226,7 @@ export default function Home() {
               <div className="relative h-[300px] sm:h-[500px] w-full">
                 <Image
                   src="https://images.unsplash.com/photo-1541961017774-22349e4a1262?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80"
-                  alt="Abstract artwork series"
+                  alt="Abstract artwork series featuring vibrant contemporary paintings"
                   fill
                   className="object-contain"
                   priority
@@ -199,6 +241,38 @@ export default function Home() {
 
         {/* Best Sellers - Carousel */}
         <section className="py-16 bg-white">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "ItemList",
+                name: "Best Selling Artworks",
+                description: "Our most popular art pieces",
+                itemListElement: featuredArtworks.map((artwork, index) => ({
+                  "@type": "ListItem",
+                  position: index + 1,
+                  item: {
+                    "@type": "Product",
+                    name: artwork.name,
+                    description: `${artwork.type} by ${artwork.artist}`,
+                    image: artwork.image,
+                    offers: {
+                      "@type": "Offer",
+                      price: artwork.price,
+                      priceCurrency: "USD",
+                      availability: "https://schema.org/InStock",
+                    },
+                    creator: {
+                      "@type": "Person",
+                      name: artwork.artist,
+                    },
+                  },
+                })),
+              }),
+            }}
+          />
+
           <div className="mx-auto max-w-[600px] text-center">
             <h2 className="text-4xl sm:text-5xl font-semibold tracking-tight text-[#1d1d1f]">Best Sellers</h2>
             <p className="mt-2 text-lg sm:text-xl text-[#1d1d1f]">Our most popular pieces.</p>

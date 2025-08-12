@@ -17,36 +17,38 @@ export function SkyScene() {
   return (
     <group>
       {/* Starfield */}
-      <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+      <Stars radius={150} depth={80} count={8000} factor={6} saturation={0} fade speed={1} />
 
-      {/* Gradient sky */}
       <mesh>
-        <sphereGeometry args={[150, 32, 16]} />
-        <meshBasicMaterial side={THREE.BackSide} color="#000814" transparent opacity={0.8} />
+        <sphereGeometry args={[200, 32, 16]} />
+        <meshBasicMaterial side={THREE.BackSide} color="#000814" transparent opacity={0.9} />
       </mesh>
 
       {/* Floating clouds */}
       <group ref={cloudRef}>
-        <Cloud position={[20, 15, -30]} speed={0.2} opacity={0.3} color="#ffffff" />
-        <Cloud position={[-25, 20, -40]} speed={0.15} opacity={0.2} color="#ffffff" />
-        <Cloud position={[0, 25, -50]} speed={0.1} opacity={0.25} color="#ffffff" />
+        <Cloud position={[30, 20, -40]} speed={0.2} opacity={0.4} color="#ffffff" />
+        <Cloud position={[-35, 25, -50]} speed={0.15} opacity={0.3} color="#ffffff" />
+        <Cloud position={[0, 30, -60]} speed={0.1} opacity={0.35} color="#ffffff" />
       </group>
 
-      {/* Ambient lighting */}
-      <ambientLight intensity={0.2} color="#4a5568" />
+      <ambientLight intensity={0.3} color="#2a4a6b" />
       <directionalLight
-        position={[10, 20, 5]}
-        intensity={0.5}
+        position={[15, 30, 10]}
+        intensity={0.8}
         color="#ffffff"
         castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-far={50}
-        shadow-camera-left={-20}
-        shadow-camera-right={20}
-        shadow-camera-top={20}
-        shadow-camera-bottom={-20}
+        shadow-mapSize-width={4096}
+        shadow-mapSize-height={4096}
+        shadow-camera-far={80}
+        shadow-camera-left={-40}
+        shadow-camera-right={40}
+        shadow-camera-top={40}
+        shadow-camera-bottom={-40}
       />
+
+      <pointLight position={[0, 15, 0]} intensity={0.4} color="#00ffff" distance={50} />
+      <pointLight position={[20, 10, -20]} intensity={0.3} color="#ff00ff" distance={40} />
+      <pointLight position={[-20, 10, 20]} intensity={0.3} color="#ffff00" distance={40} />
     </group>
   )
 }

@@ -22,14 +22,6 @@ export function MetaverseUI() {
           Help
         </Button>
       </div>
-
-      <div className="fixed top-4 right-4 z-10">
-        <div className="bg-black/50 text-white p-3 rounded-lg backdrop-blur-sm">
-          <p className="text-sm">Use mouse to look around</p>
-          <p className="text-sm">Scroll to zoom</p>
-          <p className="text-sm">Click artworks to interact</p>
-        </div>
-      </div>
     </Html>
   )
 }
